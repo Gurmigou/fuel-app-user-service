@@ -38,7 +38,7 @@ public class SecurityController {
         }
     }
 
-    @PostMapping("/sing-up")
+    @PostMapping("/sign up")
     public ResponseEntity<?> registerUser(@RequestBody @Valid RegistrationDto registrationDto) {
         try {
             User newUser = userService.registerUser(registrationDto);
