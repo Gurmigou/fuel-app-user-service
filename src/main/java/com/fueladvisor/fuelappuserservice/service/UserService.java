@@ -7,8 +7,6 @@ import com.fueladvisor.fuelappuserservice.model.entity.User;
 import com.fueladvisor.fuelappuserservice.repository.UserRepository;
 import com.fueladvisor.fuelappuserservice.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,11 +45,11 @@ public class UserService {
 
     public TokenDto loginUser(LoginDto loginDto) {
         User user = findUserByEmail(loginDto.getEmail())
-                        .orElseThrow(() -> new UsernameNotFoundException(
+                        .orElseThrow(() -> new IllegalStateException(
                         "User with email " + loginDto.getEmail() + " does not exist."));
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword()))
-            throw new BadCredentialsException("");
+            throw new IllegalStateException("Passwords don't math");
 
         String jwtToken = jwtProvider.generateToken(user.getEmail());
         return new TokenDto(jwtToken);
