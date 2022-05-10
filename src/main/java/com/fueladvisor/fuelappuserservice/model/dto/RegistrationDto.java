@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -15,8 +16,8 @@ import javax.validation.constraints.Min;
 public class RegistrationDto {
     @Email
     private String email;
-    @Min(6)
+    @Size(min = 6)
     private String password;
-    @Min(6)
+    @Size(min = 6)
     private String confirmPassword;
 }
