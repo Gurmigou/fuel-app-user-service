@@ -34,19 +34,19 @@ public class SecurityController {
         } catch (Exception e) {
             return ResponseEntity
                     .badRequest()
-                    .body(new Response(null, false, "Email or password is incorrect."));
+                    .body(new Response(false, e.getMessage()));
         }
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody @Valid RegistrationDto registrationDto) {
         try {
-            User newUser = userService.registerUser(registrationDto);
-            return ResponseEntity.ok(new Response(newUser, true, "You have been successfully registered"));
+            userService.registerUser(registrationDto);
+            return ResponseEntity.ok(new Response(true, "You have been successfully registered"));
         } catch (Exception e) {
             return ResponseEntity
                     .badRequest()
-                    .body(new Response(null, false, e.getMessage()));
+                    .body(new Response(false, e.getMessage()));
         }
     }
 
@@ -58,7 +58,7 @@ public class SecurityController {
         } catch (Exception e) {
             return ResponseEntity
                     .badRequest()
-                    .body(new Response(null, false, "Jwt token is invalid."));
+                    .body(new Response(false, "Jwt token is invalid: " + e.getMessage()));
         }
     }
 }

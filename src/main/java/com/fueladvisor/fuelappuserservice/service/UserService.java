@@ -49,7 +49,7 @@ public class UserService {
                         "User with email " + loginDto.getEmail() + " does not exist."));
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword()))
-            throw new IllegalStateException("Passwords don't math");
+            throw new IllegalStateException("Passwords don't match");
 
         String jwtToken = jwtProvider.generateToken(user.getEmail());
         return new TokenDto(jwtToken);
