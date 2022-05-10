@@ -1,11 +1,24 @@
+server:
+   port: 9091
+
 spring:
+   application:
+      name: fuel-app-user-service
+   main:
+      allow-circular-references: true
    datasource:
-      url: jdbc:mysql://localhost:3307/fuel_app_users
-      username: root
-      password: root
+      url: jdbc:mysql://@eu-cdbr-west-02.cleardb.net/heroku_610556e2e57f804?reconnect=true&useUnicode=yes&characterEncoding=UTF-8
+      username: bf7dfc3b0c69f9
+      password: 25da58ea
       driver-class-name: com.mysql.cj.jdbc.Driver
    jpa:
       hibernate:
          ddl-auto: update
       show-sql: true
 
+eureka:
+   client:
+      service-url:
+         defaultZone: https://e-petrol-eureka.herokuapp.com/eureka
+
+token-secret-key: somesecretwordstherex

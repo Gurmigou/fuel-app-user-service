@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/security")
+@RequestMapping("/api/v1/security")
 public class SecurityController {
     private final UserService userService;
 
@@ -49,7 +49,7 @@ public class SecurityController {
         }
     }
 
-    @GetMapping("/update-token")
+    @PostMapping("/update-token")
     public ResponseEntity<?> authenticateUsingJwtToken(Principal principal) {
         try {
             TokenDto tokenDto = userService.generateToken(principal.getName());
