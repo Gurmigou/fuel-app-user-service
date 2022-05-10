@@ -21,4 +21,4 @@ eureka:
       service-url:
          defaultZone: https://e-petrol-eureka.herokuapp.com/eureka
 
-token-secret-key: somesecretwordstherex
+token-secret-key: qowpedmwpqodmeopdmodmewofmw9erfu8934hfnoiewnfcf9832nfioewnkdcksefmwoeimf983joiepjfwioe
