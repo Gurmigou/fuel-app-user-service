@@ -1,85 +1,84 @@
 package com.fueladvisor.fuelappuserservice.service;
 
-import com.fueladvisor.fuelappuserservice.model.dto.LoginDto;
-import com.fueladvisor.fuelappuserservice.model.dto.RegistrationDto;
-import com.fueladvisor.fuelappuserservice.model.dto.TokenDto;
+import com.fueladvisor.fuelappuserservice.model.dto.AboutUserDto;
+import com.fueladvisor.fuelappuserservice.model.dto.CarDto;
+import com.fueladvisor.fuelappuserservice.model.entity.Car;
 import com.fueladvisor.fuelappuserservice.model.entity.User;
+import com.fueladvisor.fuelappuserservice.repository.CarRepository;
 import com.fueladvisor.fuelappuserservice.repository.UserRepository;
-import com.fueladvisor.fuelappuserservice.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.function.Supplier;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final JwtProvider jwtProvider;
-    private final PasswordEncoder passwordEncoder;
+    private final CarRepository carRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, CarRepository carRepository) {
         this.userRepository = userRepository;
-        this.jwtProvider = jwtProvider;
-        this.passwordEncoder = passwordEncoder;
+        this.carRepository = carRepository;
     }
 
-    public User registerUser(RegistrationDto registrationDto) {
-        if (!registrationDto.getPassword().equals(registrationDto.getConfirmPassword())) {
-            throw new IllegalStateException(String.format(
-                    "Password and confirm password are not equal: %s != %s",
-                    registrationDto.getPassword(),
-                    registrationDto.getConfirmPassword()));
-        }
-
-        if (isUserExistsByEmail(registrationDto.getEmail())) {
-            throw new IllegalStateException(String.format(
-                    "User with email %s already exists", registrationDto.getEmail()));
-        }
-
-        User user = createNewUser(registrationDto);
-        return saveUser(user);
+    public AboutUserDto getUserAndCarInfo(String email) {
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(userNotExistsException(email));
+        return mapToAboutUserDto(user);
     }
 
-    public TokenDto loginUser(LoginDto loginDto) {
-        User user = findUserByEmail(loginDto.getEmail())
-                        .orElseThrow(() -> new IllegalStateException(
-                        "User with email " + loginDto.getEmail() + " does not exist."));
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteUser(String email) {
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(userNotExistsException(email));
 
-        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword()))
-            throw new IllegalStateException("Passwords don't match");
-
-        String jwtToken = jwtProvider.generateToken(user.getEmail());
-        return new TokenDto(jwtToken);
+        userRepository.delete(user);
     }
 
-    public TokenDto generateToken(String email) {
-        return new TokenDto(jwtProvider.generateToken(email));
+    @Transactional(rollbackFor = Exception.class)
+    public void saveCar(String email, CarDto carDto) {
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(userNotExistsException(email));
+
+        Car car = Car.builder()
+                .carBrand(carDto.getCarBrand())
+                .carModel(carDto.getCarModel())
+                .fuelConsumption(carDto.getFuelConsumption())
+                .user(user)
+                .build();
+
+        carRepository.save(car);
     }
 
-    private Optional<User> findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    @Transactional(rollbackFor = Exception.class)
+    public void updateCar(String email, CarDto carDto) {
+        Car car = carRepository
+                .finCardByUserEmail(email)
+                .orElseThrow(userNotExistsException(email));
+
+        car.setCarBrand(carDto.getCarBrand());
+        car.setCarModel(carDto.getCarModel());
+        car.setFuelConsumption(carDto.getFuelConsumption());
+
+        carRepository.save(car);
     }
 
-    private boolean isUserExistsByEmail(String email) {
-        return findUserByEmail(email).isPresent();
-    }
-
-    private User saveUser(User user) {
-        return userRepository.save(user);
-    }
-
-    private User createNewUser(RegistrationDto registrationDto) {
-        return User.builder()
-                .email(registrationDto.getEmail())
-                .password(encodePassword(registrationDto.getPassword()))
-                .registrationTimestamp(LocalDateTime.now())
+    private AboutUserDto mapToAboutUserDto(User user) {
+        Car car = user.getCar();
+        return AboutUserDto.builder()
+                .email(user.getEmail())
+                .carBrand(car.getCarBrand())
+                .carModel(car.getCarModel())
+                .fuelConsumption(car.getFuelConsumption())
                 .build();
     }
 
-    private String encodePassword(String password) {
-        return passwordEncoder.encode(password);
+    private Supplier<IllegalStateException> userNotExistsException(String email) {
+        return () -> new IllegalStateException("User with email " + email + " doesn't exist");
     }
 }

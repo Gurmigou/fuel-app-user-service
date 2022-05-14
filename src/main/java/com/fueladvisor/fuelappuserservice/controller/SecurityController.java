@@ -4,8 +4,7 @@ import com.fueladvisor.fuelappuserservice.model.dto.LoginDto;
 import com.fueladvisor.fuelappuserservice.model.dto.RegistrationDto;
 import com.fueladvisor.fuelappuserservice.model.dto.Response;
 import com.fueladvisor.fuelappuserservice.model.dto.TokenDto;
-import com.fueladvisor.fuelappuserservice.model.entity.User;
-import com.fueladvisor.fuelappuserservice.service.UserService;
+import com.fueladvisor.fuelappuserservice.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,10 +18,10 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/v1/security")
 public class SecurityController {
-    private final UserService userService;
+    private final SecurityService userService;
 
     @Autowired
-    public SecurityController(UserService userService) {
+    public SecurityController(SecurityService userService) {
         this.userService = userService;
     }
 
