@@ -1,6 +1,6 @@
 # **Fuel users microservice**
 
-# Actions (API)
+# Security API
 This section shows a list of possible requests and their example responses.
 ### 1. Registration
 **HTTP method**
@@ -99,4 +99,90 @@ Authorization: Bearer <json web token>
 {
     "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTY1MjIxMzc4MSwiZXhwIjoxNjUyNTcyODAwfQ.VIlTrW12ceo4zZ0iDvaPjILl8bminXeZumwoJlpSOXsfaK5Ikhw31zOhoH3kA6Obtg7hZBwNWkWRRxuFuHh9Pg"
 }
+```
+
+# User and Car API
+This section shows a list of possible requests and their example responses.
+### 1. Info about user and car
+**HTTP method**
+```
+GET
+```
+**URL**
+```
+http://DOMAIN_NAME/api/v1/user
+```
+**Body**
+```jsonc
+{
+    "carBrand": "porsche",
+    "carModel": "911",
+    "fuelConsumption": 15.5
+}
+```
+
+**Response example:**
+
+If user doesn't have car 
+```jsonc
+{
+    "email": "test@gmail.com",
+    "carBrand": null,
+    "carModel": null,
+    "fuelConsumption": null
+}
+```
+
+If user has car 
+```jsonc
+{
+    "email": "test@gmail.com",
+    "carBrand": "porsche",
+    "carModel": "911",
+    "fuelConsumption": 15.5
+}
+```
+### 2. Save user's car
+**HTTP method**
+```
+POST
+```
+**URL**
+```
+http://DOMAIN_NAME/api/v1/user/car
+```
+**Body**
+```jsonc
+{
+    "carBrand": "porsche",
+    "carModel": "911",
+    "fuelConsumption": 15.5
+}
+```
+### 3. Update user's car
+**HTTP method**
+```
+PUT
+```
+**URL**
+```
+http://DOMAIN_NAME/api/v1/user/car
+```
+**Body**
+```jsonc
+{
+    "carBrand": "audi",
+    "carModel": "rq8",
+    "fuelConsumption": 14
+}
+```
+
+### 4. Delete user profile
+**HTTP method**
+```
+DELETE
+```
+**URL**
+```
+http://DOMAIN_NAME/api/v1/user
 ```
