@@ -3,7 +3,6 @@ package com.fueladvisor.fuelappuserservice.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter

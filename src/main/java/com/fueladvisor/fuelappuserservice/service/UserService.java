@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @Service
@@ -45,14 +46,19 @@ public class UserService {
                 .findByEmail(email)
                 .orElseThrow(userNotExistsException(email));
 
-        Car car = Car.builder()
-                .carBrand(carDto.getCarBrand())
-                .carModel(carDto.getCarModel())
-                .fuelConsumption(carDto.getFuelConsumption())
-                .user(user)
-                .build();
+        if (user.getCar() != null) {
+            updateCar(email, carDto);
+        } else {
+            Car car = Car.builder()
+                    .carBrand(carDto.getCarBrand())
+                    .carModel(carDto.getCarModel())
+                    .fuelConsumption(carDto.getFuelConsumption())
+                    .user(user)
+                    .build();
 
-        carRepository.save(car);
+            user.setCar(car);
+            userRepository.save(user);
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -72,9 +78,9 @@ public class UserService {
         Car car = user.getCar();
         return AboutUserDto.builder()
                 .email(user.getEmail())
-                .carBrand(car.getCarBrand())
-                .carModel(car.getCarModel())
-                .fuelConsumption(car.getFuelConsumption())
+                .carBrand(car == null ? null : car.getCarBrand())
+                .carModel(car == null ? null : car.getCarModel())
+                .fuelConsumption(car == null ? null : car.getFuelConsumption())
                 .build();
     }
 
