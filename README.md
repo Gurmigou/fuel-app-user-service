@@ -95,9 +95,17 @@ Authorization: Bearer <json web token>
 ```
 **Response example:**
 
+On success:
 ```jsonc
 {
     "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTY1MjIxMzc4MSwiZXhwIjoxNjUyNTcyODAwfQ.VIlTrW12ceo4zZ0iDvaPjILl8bminXeZumwoJlpSOXsfaK5Ikhw31zOhoH3kA6Obtg7hZBwNWkWRRxuFuHh9Pg"
+}
+```
+On error (if jwt is invalid):
+```jsonc
+{
+    "success": false,
+    "message": "Jwt token is invalid: <error message>"
 }
 ```
 
