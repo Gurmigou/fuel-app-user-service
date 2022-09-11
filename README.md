@@ -1,4 +1,4 @@
-# **Fuel users microservice**
+# 🧑 **EPetrol users microservice**
 
 # Security API
 This section shows a list of possible requests and their example responses.
